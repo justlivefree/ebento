@@ -1,0 +1,40 @@
+package org.ozbeman.ebento.controllers;
+
+import org.ozbeman.ebento.services.FileDownloadService;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/v1/download")
+public class FileDownloadController {
+
+    private final FileDownloadService fileDownloadService;
+
+    public FileDownloadController(FileDownloadService fileDownloadService) {
+        this.fileDownloadService = fileDownloadService;
+    }
+
+    @GetMapping("/channel-avatar/{id}")
+    public ResponseEntity<Resource> downloadChannelAvatarFile(@PathVariable UUID id) {
+        Resource resource = fileDownloadService.downloadChannelAvatarFile(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
+
+    @GetMapping("/channel-background/{id}")
+    public ResponseEntity<Resource> downloadChannelBackgroundFile(@PathVariable UUID id) {
+        Resource resource = fileDownloadService.downloadChannelBackgroundFile(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
+
+}

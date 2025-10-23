@@ -1,0 +1,29 @@
+package org.ozbeman.ebento.repository.channel;
+
+import org.ozbeman.ebento.entity.Channel;
+import org.ozbeman.ebento.entity.enums.ChannelStatus;
+import org.ozbeman.ebento.entity.enums.FileType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+@Repository
+public interface ChannelRepository extends JpaRepository<Channel, Long> {
+    @Query("select c from Channel c join fetch c.user where c.guid = :guid")
+    Optional<Channel> findOneWithUserByGuid(UUID guid);
+
+    Page<Channel> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+
+    Optional<Channel> findByGuid(UUID guid);
+
+    @Query("select c.avatarFileType from Channel c where c.avatarFileId = :fileId")
+    Optional<FileType> findOneFileTypeByAvatarFileId(UUID fileId);
+
+    @Query("select c.backgroundFileType from Channel c where c.backgroundFileId = :fileId")
+    Optional<FileType> findOneFileTypeByBackgroundFileId(UUID fileId);
+}

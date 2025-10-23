@@ -1,0 +1,38 @@
+package org.ozbeman.ebento.dto.user;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.ozbeman.ebento.entity.User;
+import org.ozbeman.ebento.entity.enums.UserStatus;
+
+import java.util.List;
+import java.util.UUID;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserListDTO {
+    private UUID guid;
+    private String name;
+    @JsonProperty(value = "phone_number")
+    private String phoneNumber;
+    private UserStatus status;
+
+    public static UserListDTO of(User user) {
+        return UserListDTO.builder()
+                .guid(user.getGuid())
+                .name(user.getName())
+                .phoneNumber(user.getPhoneNumber())
+                .status(user.getStatus())
+                .build();
+    }
+
+    public static List<UserListDTO> of(List<User> users) {
+        return users.stream().map(UserListDTO::of).toList();
+    }
+
+}
