@@ -3,6 +3,7 @@ package org.ozbeman.ebento.services;
 import org.ozbeman.ebento.entity.enums.FileType;
 import org.ozbeman.ebento.exceptions.ResourceNotFound;
 import org.ozbeman.ebento.repository.channel.ChannelRepository;
+import org.ozbeman.ebento.repository.event.EventRepository;
 import org.ozbeman.ebento.utils.ApiUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -17,9 +18,11 @@ import java.util.UUID;
 public class FileDownloadService {
 
     private final ChannelRepository channelRepository;
+    private final EventRepository eventRepository;
 
-    public FileDownloadService(ChannelRepository channelRepository) {
+    public FileDownloadService(ChannelRepository channelRepository, EventRepository eventRepository) {
         this.channelRepository = channelRepository;
+        this.eventRepository = eventRepository;
     }
 
     public Resource downloadChannelAvatarFile(UUID fileId) {
@@ -37,6 +40,18 @@ public class FileDownloadService {
     public Resource downloadChannelBackgroundFile(UUID fileId) {
         try {
             FileType fileType = channelRepository.findOneFileTypeByBackgroundFileId(fileId)
+                    .orElseThrow(() -> new ResourceNotFound("File Not Found"));
+            String fileName = "%s.%s".formatted(fileId, fileType.name().toLowerCase());
+            File file = ApiUtils.downloadChannelFile(fileName);
+            return new InputStreamResource(Files.newInputStream(file.toPath()));
+        } catch (IOException e) {
+            throw new ResourceNotFound("File Not Found");
+        }
+    }
+
+    public Resource downloadEventFile(UUID fileId) {
+        try {
+            FileType fileType = eventRepository.findOneFileTypeByFileId(fileId)
                     .orElseThrow(() -> new ResourceNotFound("File Not Found"));
             String fileName = "%s.%s".formatted(fileId, fileType.name().toLowerCase());
             File file = ApiUtils.downloadChannelFile(fileName);

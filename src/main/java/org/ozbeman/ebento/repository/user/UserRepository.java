@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsUserByPhoneNumber(String phoneNumber);
 
-    @Query("select u from User u join u.channel where u.guid = :guid")
+    @Query("select u from User u left join u.channel where u.guid = :guid")
     Optional<User> findOneWithChannelByGuid(UUID guid);
 
     @Query("select distinct u from User u join fetch u.roles r where r.role = :role")

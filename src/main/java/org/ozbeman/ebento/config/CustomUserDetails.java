@@ -1,6 +1,5 @@
 package org.ozbeman.ebento.config;
 
-import lombok.Getter;
 import org.ozbeman.ebento.entity.Channel;
 import org.ozbeman.ebento.entity.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-@Getter
 public class CustomUserDetails implements UserDetails {
     private final User userModel;
 
@@ -20,6 +18,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return userModel.getRoles().stream().map(String::valueOf).map(SimpleGrantedAuthority::new).toList();
+    }
+    
+    public User getUserModel(){
+        return userModel;
     }
 
     public Channel getUserChannel() {

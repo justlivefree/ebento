@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ozbeman.ebento.dto.channel.ProfileChannelDTO;
-import org.ozbeman.ebento.entity.Channel;
 import org.ozbeman.ebento.entity.User;
 
 import java.util.List;

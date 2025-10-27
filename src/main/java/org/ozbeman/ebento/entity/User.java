@@ -6,11 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.ozbeman.ebento.entity.enums.FileType;
 import org.ozbeman.ebento.entity.enums.UserStatus;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -31,12 +29,6 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private UserStatus status;
 
-//    @Column(name = "avatar_file_id")
-//    private UUID avatarFileId;
-//
-//    @Column(name = "avatar_file_type")
-//    private FileType avatarFileType;
-//
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Role> roles;
 

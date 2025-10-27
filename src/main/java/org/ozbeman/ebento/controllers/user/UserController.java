@@ -11,14 +11,13 @@ import org.ozbeman.ebento.entity.enums.UserStatus;
 import org.ozbeman.ebento.services.user.UserService;
 import org.ozbeman.ebento.utils.PaginatedRequest;
 import org.ozbeman.ebento.utils.PaginatedResponse;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping( "/api/v1/user")
+@RequestMapping("/api/v1/user")
 //@PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 
@@ -63,7 +62,7 @@ public class UserController {
 
     @DeleteMapping("/sessions/{id}")
     public void deleteUserSession(@PathVariable UUID id) {
-        userService.deleteUser(id);
+        userService.deleteSession(id);
     }
 
 }

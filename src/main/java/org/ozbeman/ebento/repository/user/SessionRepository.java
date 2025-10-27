@@ -1,13 +1,10 @@
 package org.ozbeman.ebento.repository.user;
 
-import io.lettuce.core.dynamic.annotation.Param;
 import org.ozbeman.ebento.entity.Session;
 import org.ozbeman.ebento.entity.User;
 import org.ozbeman.ebento.entity.enums.SessionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,4 +24,6 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     List<Session> findByUserAndStatus(User user, SessionStatus status);
 
     List<Session> findByUserGuid(UUID userGuid);
+
+    void deleteByUser(User user);
 }

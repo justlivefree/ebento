@@ -1,5 +1,5 @@
 package org.ozbeman.ebento.entity.enums;
 
 public enum SessionStatus {
-    ACTIVE, INACTIVE, DELETED, NOT_VERIFIED
+    ACTIVE, INACTIVE, NOT_VERIFIED
 }

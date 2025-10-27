@@ -19,11 +19,15 @@ public interface ChannelRepository extends JpaRepository<Channel, Long> {
 
     Page<Channel> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 
-    Optional<Channel> findByGuid(UUID guid);
+    Optional<Channel> findOneByGuid(UUID guid);
 
     @Query("select c.avatarFileType from Channel c where c.avatarFileId = :fileId")
     Optional<FileType> findOneFileTypeByAvatarFileId(UUID fileId);
 
     @Query("select c.backgroundFileType from Channel c where c.backgroundFileId = :fileId")
     Optional<FileType> findOneFileTypeByBackgroundFileId(UUID fileId);
+
+    Page<Channel> findByStatus(ChannelStatus status, Pageable pageable);
+
+    Page<Channel> findByStatusAndCategoryGuid(ChannelStatus status, UUID categoryGuid, Pageable pageable);
 }

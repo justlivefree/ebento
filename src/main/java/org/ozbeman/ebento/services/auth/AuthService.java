@@ -77,6 +77,7 @@ public class AuthService {
         throw new InvalidRequestException("User Already Exists");
     }
 
+    @Transactional
     public void verify(CustomUserDetails userDetails, Session session, String code) {
         User user = userDetails.getUserModel();
         String savedCode = otpStoreService.get(String.valueOf(user.getId()));

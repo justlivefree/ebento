@@ -3,11 +3,12 @@ package org.ozbeman.ebento.utils;
 import com.github.javafaker.Faker;
 import org.ozbeman.ebento.entity.*;
 import org.ozbeman.ebento.entity.enums.*;
+import org.ozbeman.ebento.repository.channel.ChannelCategoryRepository;
 import org.ozbeman.ebento.repository.channel.ChannelRepository;
 import org.ozbeman.ebento.repository.event.EventRepository;
 import org.ozbeman.ebento.repository.user.RoleRepository;
 import org.ozbeman.ebento.repository.user.UserRepository;
-import org.ozbeman.ebento.services.channel.impl.ChannelAdminServiceImpl;
+import org.ozbeman.ebento.services.channel.impl.AdminChannelManageServiceImpl;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -20,20 +21,22 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 @Service
-@Profile("dev")
+@Profile("faker")
 public class FakerService implements CommandLineRunner {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final ChannelRepository channelRepository;
-    private final ChannelAdminServiceImpl channelAdminServiceImpl;
+    private final AdminChannelManageServiceImpl adminChannelServiceImpl;
     private final RoleRepository roleRepository;
+    private final ChannelCategoryRepository channelCategoryRepository;
 
-    public FakerService(UserRepository userRepository, EventRepository eventRepository, ChannelRepository channelRepository, ChannelAdminServiceImpl channelAdminServiceImpl, RoleRepository roleRepository) {
+    public FakerService(UserRepository userRepository, EventRepository eventRepository, ChannelRepository channelRepository, AdminChannelManageServiceImpl adminChannelServiceImpl, RoleRepository roleRepository, ChannelCategoryRepository channelCategoryRepository) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.channelRepository = channelRepository;
-        this.channelAdminServiceImpl = channelAdminServiceImpl;
+        this.adminChannelServiceImpl = adminChannelServiceImpl;
         this.roleRepository = roleRepository;
+        this.channelCategoryRepository = channelCategoryRepository;
     }
 
     @Override
@@ -59,7 +62,17 @@ public class FakerService implements CommandLineRunner {
             userRepository.save(user);
         }
 
+        List<ChannelCategory> categories = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
+            categories.add(
+                    channelCategoryRepository.save(
+                            ChannelCategory.builder()
+                                    .title(faker.commerce().productName())
+                                    .build()
+                    ));
+        }
+
+        for (int i = 0; i < 20; i++) {
             User user = User.builder()
                     .name(faker.name().username())
                     .phoneNumber(faker.phoneNumber().cellPhone())
@@ -82,6 +95,11 @@ public class FakerService implements CommandLineRunner {
                     .description(faker.lorem().sentence(10))
                     .status(ChannelStatus.ACTIVE)
                     .user(user)
+                    .category(categories.get(i % 10))
+                    .avatarFileId(UUID.randomUUID())
+                    .avatarFileType(FileType.JPEG)
+                    .backgroundFileId(UUID.randomUUID())
+                    .backgroundFileType(FileType.PNG)
                     .build();
             user.setChannel(channel);
             channel.setEvents(IntStream.range(0, 10).<Event>mapToObj(
@@ -91,7 +109,7 @@ public class FakerService implements CommandLineRunner {
                             .startDateTime(LocalDateTime.ofInstant(faker.date().future(1, TimeUnit.DAYS).toInstant(), ZoneId.systemDefault()))
                             .endDate(LocalDate.ofInstant(faker.date().future(10, TimeUnit.DAYS).toInstant(), ZoneId.systemDefault()))
                             .status(EventStatus.ACTIVE)
-                            .hallSize(100)
+                            .hallSize(new Random().nextInt(50, 200))
                             .channel(channel)
                             .build()
             ).toList());

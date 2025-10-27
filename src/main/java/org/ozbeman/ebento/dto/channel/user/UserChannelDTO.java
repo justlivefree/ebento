@@ -1,0 +1,44 @@
+package org.ozbeman.ebento.dto.channel.user;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.ozbeman.ebento.dto.category.CategoryDTO;
+import org.ozbeman.ebento.entity.Channel;
+import org.ozbeman.ebento.entity.ChannelCategory;
+import org.ozbeman.ebento.entity.enums.ChannelStatus;
+import org.ozbeman.ebento.entity.enums.FileType;
+
+import java.util.UUID;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserChannelDTO {
+    private UUID id;
+    private String title;
+    private String description;
+    private CategoryDTO category;
+
+    @JsonProperty("avatar_file_id")
+    private UUID avatarFileId;
+
+    @JsonProperty("background_file_id")
+    private UUID backgroundFileId;
+
+    public static UserChannelDTO of(Channel channel) {
+        return UserChannelDTO.builder()
+                .id(channel.getGuid())
+                .title(channel.getTitle())
+                .description(channel.getDescription())
+                .category(CategoryDTO.of(channel.getCategory()))
+                .avatarFileId(channel.getAvatarFileId())
+                .backgroundFileId(channel.getBackgroundFileId())
+                .build();
+    }
+
+}

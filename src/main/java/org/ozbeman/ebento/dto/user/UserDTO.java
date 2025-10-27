@@ -1,8 +1,10 @@
 package org.ozbeman.ebento.dto.user;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.ozbeman.ebento.dto.channel.ChannelDTO;
-import org.ozbeman.ebento.dto.session.DetailedSessionDTO;
 import org.ozbeman.ebento.entity.User;
 import org.ozbeman.ebento.entity.enums.UserStatus;
 

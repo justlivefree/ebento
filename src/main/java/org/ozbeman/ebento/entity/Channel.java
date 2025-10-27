@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.ozbeman.ebento.entity.enums.ChannelStatus;
 import org.ozbeman.ebento.entity.enums.FileType;
 
@@ -34,6 +36,11 @@ public class Channel extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ChannelStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "category_id")
+    private ChannelCategory category;
 
     @Column(name = "avatar_file_id")
     private UUID avatarFileId;

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.ozbeman.ebento.entity.enums.EventStatus;
+import org.ozbeman.ebento.entity.enums.EventType;
 import org.ozbeman.ebento.entity.enums.FileType;
 
 import java.time.LocalDate;
@@ -40,11 +41,21 @@ public class Event extends BaseEntity {
     @Column(nullable = false)
     private EventStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EventType type = EventType.ONSITE;
+
     @Column(name = "file_id")
     private UUID fileId;
 
     @Column(name = "file_type")
     private FileType fileType;
+
+    @Column
+    private Double lat;
+
+    @Column
+    private Double lon;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "channel_id", nullable = false)

@@ -37,4 +37,12 @@ public class FileDownloadController {
                 .body(resource);
     }
 
+    @GetMapping("/event-file/{id}")
+    public ResponseEntity<Resource> downloadEventFile(@PathVariable UUID id) {
+        Resource resource = fileDownloadService.downloadEventFile(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
+
 }

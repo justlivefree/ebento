@@ -20,8 +20,6 @@ public class OtpStoreService {
     }
 
     public String get(String key) {
-        int[] a = new int[]{1, 2, 3};
-
         return redisTemplate.opsForValue().get(key);
     }
 }

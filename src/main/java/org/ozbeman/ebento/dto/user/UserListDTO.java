@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserListDTO {
-    private UUID guid;
+    private UUID id;
     private String name;
     @JsonProperty(value = "phone_number")
     private String phoneNumber;
@@ -24,7 +24,7 @@ public class UserListDTO {
 
     public static UserListDTO of(User user) {
         return UserListDTO.builder()
-                .guid(user.getGuid())
+                .id(user.getGuid())
                 .name(user.getName())
                 .phoneNumber(user.getPhoneNumber())
                 .status(user.getStatus())

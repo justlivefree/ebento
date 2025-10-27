@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.ozbeman.ebento.entity.Channel;
 import org.ozbeman.ebento.entity.enums.ChannelStatus;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Data

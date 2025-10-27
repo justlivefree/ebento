@@ -44,4 +44,8 @@ public class ApiUtils {
         return new File(CHANNEL_FILE_PATH + File.separator + fileName);
     }
 
+    public static File downloadEventFile(String fileName) {
+        return new File(EVENT_FILE_PATH + File.separator + fileName);
+    }
+
 }

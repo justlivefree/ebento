@@ -43,13 +43,14 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse methodArgumentNotValidHandler(MethodArgumentNotValidException ex) {
         FieldError fieldError = ex.getBindingResult().getFieldError();
-        String message = "Invalid field: %s".formatted(ex.getMessage());
+        String message = "Invalid field: %s".formatted(fieldError.getDefaultMessage());
         return new ApiErrorResponse(message);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiErrorResponse generalHandler(Exception ex) throws Exception {
+    public ApiErrorResponse generalHandler(Exception ex) {
+        ex.printStackTrace();
         return new ApiErrorResponse(ex.getMessage());
     }
 
