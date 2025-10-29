@@ -12,6 +12,6 @@ import org.ozbeman.ebento.utils.RegexPatternUtils;
 @NoArgsConstructor
 public class LoginDTO {
     @JsonProperty(value = "phone_number", required = true)
-//    @Pattern(regexp = RegexPatternUtils.PHONE_NUMBER)
+    @Pattern(regexp = RegexPatternUtils.PHONE_NUMBER)
     private String phoneNumber;
 }

@@ -1,4 +1,4 @@
-package org.ozbeman.ebento.repository.event;
+package org.ozbeman.ebento.repository;
 
 import org.ozbeman.ebento.entity.Channel;
 import org.ozbeman.ebento.entity.Event;
@@ -26,8 +26,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("select e from Event e join fetch e.channel where e.status = :status")
     Page<Event> findWithChannelByStatus(EventStatus status, Pageable pageable);
 
-    Optional<Event> findOneByGuidAndStatus(UUID guid, EventStatus status);
-
     Page<Event> findByChannelAndStatusIn(Channel channel, List<EventStatus> status, Pageable pageable);
 
     Optional<Event> findOneByGuid(UUID guid);
@@ -37,4 +35,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("select e.fileType from Event e where e.fileId = :fileId")
     Optional<FileType> findOneFileTypeByFileId(UUID fileId);
+
+    Page<Event> findByStatusAndTitleContainsIgnoreCase(EventStatus status, String title, Pageable pageable);
 }

@@ -18,7 +18,7 @@ public class AdminUpdateChannelDTO {
     @Pattern(regexp = RegexPatternUtils.CHANNEL_TITLE)
     private String title;
 
-    @Pattern(regexp = RegexPatternUtils.CHANNEL_DESCRIPTION)
+    @Size(min = 50, max = 255)
     private String description;
 
     private ChannelStatus status;

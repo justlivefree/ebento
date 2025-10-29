@@ -1,10 +1,10 @@
 package org.ozbeman.ebento.services.channel.impl;
 
 import jakarta.validation.Valid;
+import org.ozbeman.ebento.dto.channel.admin.AdminChannelCreateDTO;
 import org.ozbeman.ebento.dto.channel.admin.AdminChannelDTO;
 import org.ozbeman.ebento.dto.channel.admin.AdminChannelListDTO;
 import org.ozbeman.ebento.dto.channel.admin.AdminUpdateChannelDTO;
-import org.ozbeman.ebento.dto.channel.admin.AdminChannelCreateDTO;
 import org.ozbeman.ebento.entity.Channel;
 import org.ozbeman.ebento.entity.ChannelCategory;
 import org.ozbeman.ebento.entity.Role;
@@ -14,14 +14,13 @@ import org.ozbeman.ebento.entity.enums.FileType;
 import org.ozbeman.ebento.entity.enums.UserRole;
 import org.ozbeman.ebento.exceptions.InvalidRequestException;
 import org.ozbeman.ebento.exceptions.ResourceNotFound;
-import org.ozbeman.ebento.repository.channel.ChannelCategoryRepository;
-import org.ozbeman.ebento.repository.channel.ChannelRepository;
-import org.ozbeman.ebento.repository.event.EventRepository;
-import org.ozbeman.ebento.repository.user.RoleRepository;
-import org.ozbeman.ebento.repository.user.SessionRepository;
-import org.ozbeman.ebento.repository.user.UserRepository;
+import org.ozbeman.ebento.repository.ChannelCategoryRepository;
+import org.ozbeman.ebento.repository.ChannelRepository;
+import org.ozbeman.ebento.repository.RoleRepository;
+import org.ozbeman.ebento.repository.SessionRepository;
+import org.ozbeman.ebento.repository.UserRepository;
 import org.ozbeman.ebento.services.channel.AdminChannelManageService;
-import org.ozbeman.ebento.utils.ApiUtils;
+import org.ozbeman.ebento.utils.FileUtils;
 import org.ozbeman.ebento.utils.PaginatedRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,19 +35,26 @@ import java.util.UUID;
 @Service
 public class AdminChannelManageServiceImpl implements AdminChannelManageService {
     private final ChannelRepository channelRepository;
-    private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ChannelCategoryRepository channelCategoryRepository;
     private final SessionRepository sessionRepository;
+    private final FileUtils fileUtils;
 
-    public AdminChannelManageServiceImpl(ChannelRepository channelRepository, EventRepository eventRepository, UserRepository userRepository, RoleRepository roleRepository, ChannelCategoryRepository channelCategoryRepository, SessionRepository sessionRepository) {
+    public AdminChannelManageServiceImpl(
+            ChannelRepository channelRepository,
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            ChannelCategoryRepository channelCategoryRepository,
+            SessionRepository sessionRepository,
+            FileUtils fileUtils
+    ) {
         this.channelRepository = channelRepository;
-        this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.channelCategoryRepository = channelCategoryRepository;
         this.sessionRepository = sessionRepository;
+        this.fileUtils = fileUtils;
     }
 
     public Page<AdminChannelListDTO> getChannels(@Valid PaginatedRequest paginatedRequest) {
@@ -144,7 +150,7 @@ public class AdminChannelManageServiceImpl implements AdminChannelManageService 
             Channel channel = channelRepository.findOneByGuid(guid)
                     .orElseThrow(() -> new ResourceNotFound("Channel Not Found"));
             UUID fileId = UUID.randomUUID();
-            FileType fileType = ApiUtils.saveChannelFile(fileId, file);
+            FileType fileType = fileUtils.saveChannelFile(fileId, file);
             channel.setAvatarFileId(fileId);
             channel.setAvatarFileType(fileType);
             channelRepository.save(channel);
@@ -163,7 +169,7 @@ public class AdminChannelManageServiceImpl implements AdminChannelManageService 
             Channel channel = channelRepository.findOneByGuid(guid)
                     .orElseThrow(() -> new ResourceNotFound("Channel Not Found"));
             UUID fileId = UUID.randomUUID();
-            FileType fileType = ApiUtils.saveChannelFile(fileId, file);
+            FileType fileType = fileUtils.saveChannelFile(fileId, file);
             channel.setBackgroundFileId(fileId);
             channel.setBackgroundFileType(fileType);
             channelRepository.save(channel);

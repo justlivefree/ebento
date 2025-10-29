@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ozbeman.ebento.entity.Session;
-import org.ozbeman.ebento.entity.enums.SessionStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +17,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserProfileSessionDTO {
     private UUID id;
+
     private String device;
+
     @JsonProperty("created_at")
     private LocalDate createdAt;
 

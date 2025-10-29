@@ -9,7 +9,6 @@ import org.ozbeman.ebento.entity.enums.UserRole;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Data

@@ -1,6 +1,5 @@
 package org.ozbeman.ebento.services.channel;
 
-import jakarta.validation.Valid;
 import org.ozbeman.ebento.dto.category.CategoryDTO;
 import org.ozbeman.ebento.dto.category.CreateUpdateCategoryDTO;
 import org.ozbeman.ebento.dto.channel.user.UserChannelListDTO;

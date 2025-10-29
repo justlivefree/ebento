@@ -1,4 +1,4 @@
-package org.ozbeman.ebento.repository.channel;
+package org.ozbeman.ebento.repository;
 
 import org.ozbeman.ebento.entity.ChannelCategory;
 import org.springframework.data.jpa.repository.JpaRepository;

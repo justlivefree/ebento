@@ -3,7 +3,6 @@ package org.ozbeman.ebento.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.ozbeman.ebento.config.CustomUserDetails;
 import org.ozbeman.ebento.dto.auth.AuthResponseDTO;
 import org.ozbeman.ebento.dto.auth.LoginDTO;
 import org.ozbeman.ebento.dto.auth.RegisterDTO;
@@ -12,7 +11,6 @@ import org.ozbeman.ebento.entity.Session;
 import org.ozbeman.ebento.services.auth.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@PreAuthorize("permitAll()")
 public class AuthController {
 
     private final AuthService authService;
@@ -39,13 +38,11 @@ public class AuthController {
     }
 
     @PostMapping("/verify")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> verify(
+    public ResponseEntity<Void> verify(
             HttpServletRequest request,
-            @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody VerificationDTO verificationDTO
     ) {
-        authService.verify(userDetails, (Session) request.getAttribute("session"), verificationDTO.getCode());
+        authService.verify((Session) request.getAttribute("session"), verificationDTO.getCode());
         return ResponseEntity.accepted().build();
     }
 

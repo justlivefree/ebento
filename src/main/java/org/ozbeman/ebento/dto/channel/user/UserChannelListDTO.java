@@ -16,8 +16,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserChannelListDTO {
     private UUID id;
+
     private String title;
+
     private CategoryDTO category;
+
     @JsonProperty("avatar_file_id")
     private UUID avatarFileId;
 

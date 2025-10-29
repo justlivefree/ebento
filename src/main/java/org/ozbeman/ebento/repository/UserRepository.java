@@ -1,4 +1,4 @@
-package org.ozbeman.ebento.repository.user;
+package org.ozbeman.ebento.repository;
 
 import org.ozbeman.ebento.entity.User;
 import org.ozbeman.ebento.entity.enums.UserRole;

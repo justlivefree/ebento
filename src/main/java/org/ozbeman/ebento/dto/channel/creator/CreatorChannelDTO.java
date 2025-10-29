@@ -17,8 +17,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CreatorChannelDTO {
     private UUID id;
+
     private String title;
+
     private String description;
+
     private ChannelStatus status;
 
     @JsonProperty("avatar_file_id")

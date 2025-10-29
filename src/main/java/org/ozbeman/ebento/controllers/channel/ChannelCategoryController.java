@@ -7,6 +7,7 @@ import org.ozbeman.ebento.dto.channel.user.UserChannelListDTO;
 import org.ozbeman.ebento.services.channel.ChannelCategoryService;
 import org.ozbeman.ebento.utils.PaginatedRequest;
 import org.ozbeman.ebento.utils.PaginatedResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,18 +24,19 @@ public class ChannelCategoryController {
     }
 
     @GetMapping("")
+    @PreAuthorize("permitAll()")
     public List<CategoryDTO> getCategories() {
         return channelCategoryService.getCategories();
     }
 
     @PostMapping("")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public CategoryDTO createCategory(@Valid @RequestBody CreateUpdateCategoryDTO createUpdateCategoryDTO) {
         return channelCategoryService.createCategory(createUpdateCategoryDTO);
     }
 
     @PatchMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public CategoryDTO updateCategory(
             @PathVariable UUID id,
             @Valid @RequestBody CreateUpdateCategoryDTO createUpdateCategoryDTO
@@ -43,7 +45,7 @@ public class ChannelCategoryController {
     }
 
     @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteCategory(@PathVariable UUID id) {
         channelCategoryService.deleteCategory(id);
     }

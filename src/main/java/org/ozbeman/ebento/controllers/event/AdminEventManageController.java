@@ -7,6 +7,7 @@ import org.ozbeman.ebento.services.event.AdminEventManageService;
 import org.ozbeman.ebento.utils.PaginatedRequest;
 import org.ozbeman.ebento.utils.PaginatedResponse;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/admin/event")
-//@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminEventManageController {
 
     private final AdminEventManageService adminEventManageService;

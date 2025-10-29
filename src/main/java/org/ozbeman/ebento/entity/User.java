@@ -22,7 +22,7 @@ public class User extends BaseEntity {
     @Column(length = 25, nullable = false)
     private String name;
 
-    @Column(name = "phone_number", length = 25)
+    @Column(name = "phone_number", length = 25, unique = true)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)

@@ -1,5 +1,6 @@
 package org.ozbeman.ebento.utils;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,8 @@ public class PaginatedResponse<T> {
     private boolean hasNext;
     private boolean hasPrev;
     private List<T> data;
+    @JsonProperty("search_data")
+    private T searchData;
 
     public static <E> PaginatedResponse<E> of(Page<E> page) {
         return PaginatedResponse.<E>builder()

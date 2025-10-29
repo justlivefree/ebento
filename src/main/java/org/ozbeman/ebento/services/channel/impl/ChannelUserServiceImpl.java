@@ -1,6 +1,5 @@
 package org.ozbeman.ebento.services.channel.impl;
 
-import org.ozbeman.ebento.config.CustomUserDetails;
 import org.ozbeman.ebento.dto.channel.user.UserChannelDTO;
 import org.ozbeman.ebento.dto.channel.user.UserChannelListDTO;
 import org.ozbeman.ebento.dto.event.user.UserEventListDTO;
@@ -9,8 +8,8 @@ import org.ozbeman.ebento.entity.Event;
 import org.ozbeman.ebento.entity.enums.ChannelStatus;
 import org.ozbeman.ebento.entity.enums.EventStatus;
 import org.ozbeman.ebento.exceptions.ResourceNotFound;
-import org.ozbeman.ebento.repository.channel.ChannelRepository;
-import org.ozbeman.ebento.repository.event.EventRepository;
+import org.ozbeman.ebento.repository.ChannelRepository;
+import org.ozbeman.ebento.repository.EventRepository;
 import org.ozbeman.ebento.services.channel.UserChannelService;
 import org.ozbeman.ebento.utils.PaginatedRequest;
 import org.springframework.data.domain.Page;
@@ -38,7 +37,7 @@ public class ChannelUserServiceImpl implements UserChannelService {
     }
 
     @Override
-    public UserChannelDTO getChannel(UUID guid, CustomUserDetails userDetails) {
+    public UserChannelDTO getChannel(UUID guid) {
         return channelRepository.findOneByGuid(guid)
                 .map(UserChannelDTO::of)
                 .orElseThrow(() -> new ResourceNotFound("Channel Not Found"));

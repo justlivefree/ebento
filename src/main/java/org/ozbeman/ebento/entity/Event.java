@@ -43,7 +43,7 @@ public class Event extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EventType type = EventType.ONSITE;
+    private EventType type;
 
     @Column(name = "file_id")
     private UUID fileId;

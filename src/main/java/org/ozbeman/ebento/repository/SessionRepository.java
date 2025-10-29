@@ -1,4 +1,4 @@
-package org.ozbeman.ebento.repository.user;
+package org.ozbeman.ebento.repository;
 
 import org.ozbeman.ebento.entity.Session;
 import org.ozbeman.ebento.entity.User;
@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
-    @Query("select distinct s from Session s join fetch s.user u join u.channel where s.guid = :guid")
+    @Query("select distinct s from Session s join fetch s.user u left join fetch u.channel join fetch u.roles where s.guid = :guid")
     Session findOneWithUserByGuid(UUID guid);
 
     boolean existsSessionByGuid(UUID guid);

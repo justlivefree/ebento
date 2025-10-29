@@ -18,8 +18,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class DetailedSessionDTO {
     private UUID id;
+
     private String device;
+
     private SessionStatus status;
+
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
 

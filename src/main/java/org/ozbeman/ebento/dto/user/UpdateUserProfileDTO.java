@@ -2,16 +2,17 @@ package org.ozbeman.ebento.dto.user;
 
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ozbeman.ebento.utils.RegexPatternUtils;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserProfileDTO {
-    @NotBlank(message = "Name field is blank")
-    @Size(min = 5, max = 25, message = "Name field is too long")
+    @NotBlank
+    @Pattern(regexp = RegexPatternUtils.USER_NAME)
     private String name;
 }

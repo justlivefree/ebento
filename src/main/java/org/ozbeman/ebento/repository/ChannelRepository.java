@@ -1,4 +1,4 @@
-package org.ozbeman.ebento.repository.channel;
+package org.ozbeman.ebento.repository;
 
 import org.ozbeman.ebento.entity.Channel;
 import org.ozbeman.ebento.entity.enums.ChannelStatus;
@@ -30,4 +30,6 @@ public interface ChannelRepository extends JpaRepository<Channel, Long> {
     Page<Channel> findByStatus(ChannelStatus status, Pageable pageable);
 
     Page<Channel> findByStatusAndCategoryGuid(ChannelStatus status, UUID categoryGuid, Pageable pageable);
+
+    Page<Channel> findByStatusAndTitleContainsIgnoreCase(ChannelStatus status, String title, Pageable pageable);
 }

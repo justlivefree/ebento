@@ -5,10 +5,9 @@ import org.ozbeman.ebento.dto.channel.creator.CreatorUpdateChannelDTO;
 import org.ozbeman.ebento.entity.Channel;
 import org.ozbeman.ebento.entity.enums.FileType;
 import org.ozbeman.ebento.exceptions.InvalidRequestException;
-import org.ozbeman.ebento.repository.channel.ChannelRepository;
-import org.ozbeman.ebento.repository.event.EventRepository;
+import org.ozbeman.ebento.repository.ChannelRepository;
 import org.ozbeman.ebento.services.channel.CreatorChannelManageService;
-import org.ozbeman.ebento.utils.ApiUtils;
+import org.ozbeman.ebento.utils.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,11 +18,11 @@ import java.util.UUID;
 @Service
 public class CreatorChannelManageServiceImpl implements CreatorChannelManageService {
     private final ChannelRepository channelRepository;
-    private final EventRepository eventRepository;
+    private final FileUtils fileUtils;
 
-    public CreatorChannelManageServiceImpl(ChannelRepository channelRepository, EventRepository eventRepository) {
+    public CreatorChannelManageServiceImpl(ChannelRepository channelRepository, FileUtils fileUtils) {
         this.channelRepository = channelRepository;
-        this.eventRepository = eventRepository;
+        this.fileUtils = fileUtils;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class CreatorChannelManageServiceImpl implements CreatorChannelManageServ
     public CreatorChannelDTO uploadChannelAvatar(Channel channel, MultipartFile file) {
         try {
             UUID fileId = UUID.randomUUID();
-            FileType fileType = ApiUtils.saveChannelFile(fileId, file);
+            FileType fileType = fileUtils.saveChannelFile(fileId, file);
             channel.setAvatarFileId(fileId);
             channel.setAvatarFileType(fileType);
             channelRepository.save(channel);
@@ -72,7 +71,7 @@ public class CreatorChannelManageServiceImpl implements CreatorChannelManageServ
     public CreatorChannelDTO uploadChannelBackground(Channel channel, MultipartFile file) {
         try {
             UUID fileId = UUID.randomUUID();
-            FileType fileType = ApiUtils.saveChannelFile(fileId, file);
+            FileType fileType = fileUtils.saveChannelFile(fileId, file);
             channel.setBackgroundFileId(fileId);
             channel.setBackgroundFileType(fileType);
             channelRepository.save(channel);

@@ -17,9 +17,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserListDTO {
     private UUID id;
+
     private String name;
+
     @JsonProperty(value = "phone_number")
     private String phoneNumber;
+
     private UserStatus status;
 
     public static UserListDTO of(User user) {

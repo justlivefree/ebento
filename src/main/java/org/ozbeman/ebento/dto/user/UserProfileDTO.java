@@ -18,6 +18,7 @@ public class UserProfileDTO {
     private String name;
     private String phoneNumber;
     private ProfileChannelDTO channel;
+    private List<RoleDTO> roles;
 
     public static UserProfileDTO of(User user) {
         return UserProfileDTO.builder()
@@ -25,10 +26,7 @@ public class UserProfileDTO {
                 .name(user.getName())
                 .phoneNumber(user.getPhoneNumber())
                 .channel(ProfileChannelDTO.of(user.getChannel()))
+                .roles(RoleDTO.of(user.getRoles()))
                 .build();
-    }
-
-    public static List<UserDTO> of(List<User> users) {
-        return users.stream().map(UserDTO::of).toList();
     }
 }

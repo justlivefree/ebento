@@ -1,6 +1,5 @@
 package org.ozbeman.ebento.services.channel;
 
-import org.ozbeman.ebento.config.CustomUserDetails;
 import org.ozbeman.ebento.dto.channel.user.UserChannelDTO;
 import org.ozbeman.ebento.dto.channel.user.UserChannelListDTO;
 import org.ozbeman.ebento.dto.event.user.UserEventListDTO;
@@ -12,7 +11,7 @@ import java.util.UUID;
 public interface UserChannelService {
     Page<UserChannelListDTO> getChannels(PaginatedRequest paginatedRequest);
 
-    UserChannelDTO getChannel(UUID guid, CustomUserDetails userDetails);
+    UserChannelDTO getChannel(UUID guid);
 
     Page<UserEventListDTO> getChannelEvents(UUID channelId, PaginatedRequest paginatedRequest);
 }

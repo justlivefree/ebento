@@ -1,5 +1,6 @@
-package org.ozbeman.ebento.services;
+package org.ozbeman.ebento.services.otp;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -8,8 +9,10 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class OtpStoreService {
 
+    @Value("${ebento.otp.ttl}")
+    private Integer OTP_TTL;
+
     private final StringRedisTemplate redisTemplate;
-    private final Integer OTP_TTL = 120;
 
     public OtpStoreService(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;

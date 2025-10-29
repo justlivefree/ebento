@@ -8,9 +8,9 @@ import org.ozbeman.ebento.entity.enums.EventStatus;
 import org.ozbeman.ebento.entity.enums.FileType;
 import org.ozbeman.ebento.exceptions.InvalidRequestException;
 import org.ozbeman.ebento.exceptions.ResourceNotFound;
-import org.ozbeman.ebento.repository.event.EventRepository;
+import org.ozbeman.ebento.repository.EventRepository;
 import org.ozbeman.ebento.services.event.CreatorEventManageService;
-import org.ozbeman.ebento.utils.ApiUtils;
+import org.ozbeman.ebento.utils.FileUtils;
 import org.ozbeman.ebento.utils.PaginatedRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,9 +23,11 @@ import java.util.UUID;
 @Service
 public class CreatorEventManageServiceImpl implements CreatorEventManageService {
     private final EventRepository eventRepository;
+    private final FileUtils fileUtils;
 
-    public CreatorEventManageServiceImpl(EventRepository eventRepository) {
+    public CreatorEventManageServiceImpl(EventRepository eventRepository, FileUtils fileUtils) {
         this.eventRepository = eventRepository;
+        this.fileUtils = fileUtils;
     }
 
     public Page<CreatorEventListDTO> getChannelEvents(Channel channel, PaginatedRequest paginatedRequest) {
@@ -102,7 +104,7 @@ public class CreatorEventManageServiceImpl implements CreatorEventManageService 
             Event event = eventRepository.findOneByChannelAndGuid(channel, eventGuid)
                     .orElseThrow(() -> new ResourceNotFound("Event Not Found"));
             UUID fileId = UUID.randomUUID();
-            FileType fileType = ApiUtils.saveEventFile(fileId, file);
+            FileType fileType = fileUtils.saveEventFile(fileId, file);
             event.setFileId(fileId);
             event.setFileType(fileType);
             eventRepository.save(event);

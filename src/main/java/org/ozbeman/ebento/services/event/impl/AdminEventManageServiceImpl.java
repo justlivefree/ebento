@@ -7,10 +7,10 @@ import org.ozbeman.ebento.entity.Event;
 import org.ozbeman.ebento.entity.enums.FileType;
 import org.ozbeman.ebento.exceptions.InvalidRequestException;
 import org.ozbeman.ebento.exceptions.ResourceNotFound;
-import org.ozbeman.ebento.repository.channel.ChannelRepository;
-import org.ozbeman.ebento.repository.event.EventRepository;
+import org.ozbeman.ebento.repository.ChannelRepository;
+import org.ozbeman.ebento.repository.EventRepository;
 import org.ozbeman.ebento.services.event.AdminEventManageService;
-import org.ozbeman.ebento.utils.ApiUtils;
+import org.ozbeman.ebento.utils.FileUtils;
 import org.ozbeman.ebento.utils.PaginatedRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +24,12 @@ import java.util.UUID;
 public class AdminEventManageServiceImpl implements AdminEventManageService {
     private final ChannelRepository channelRepository;
     private final EventRepository eventRepository;
+    private final FileUtils fileUtils;
 
-    public AdminEventManageServiceImpl(ChannelRepository channelRepository, EventRepository eventRepository) {
+    public AdminEventManageServiceImpl(ChannelRepository channelRepository, EventRepository eventRepository, FileUtils fileUtils) {
         this.channelRepository = channelRepository;
         this.eventRepository = eventRepository;
+        this.fileUtils = fileUtils;
     }
 
     @Override
@@ -101,7 +103,7 @@ public class AdminEventManageServiceImpl implements AdminEventManageService {
             Event event = eventRepository.findOneByGuid(guid)
                     .orElseThrow(() -> new ResourceNotFound("Event Not Found"));
             UUID fileId = UUID.randomUUID();
-            FileType fileType = ApiUtils.saveEventFile(fileId, file);
+            FileType fileType = fileUtils.saveEventFile(fileId, file);
             event.setFileId(fileId);
             event.setFileType(fileType);
             eventRepository.save(event);

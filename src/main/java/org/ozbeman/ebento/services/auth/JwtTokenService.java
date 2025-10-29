@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -13,8 +14,8 @@ import java.util.Map;
 
 @Service
 public class JwtTokenService {
-    private static final String SECRET_KEY = "bcfcbb8dd68213ca94fe17fe297d12cea81105c9c38d75b75c7d0d5816f7798c";
-
+    @Value("${ebento.jwt.secret-key}")
+    private String SECRET_KEY;
 
     private SecretKey getSecretKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
@@ -39,10 +40,5 @@ public class JwtTokenService {
         Claims claims = extractClaims(token);
         List<?> extractedRoles = claims.get("roles", List.class);
         return extractedRoles.stream().map(String::valueOf).toList();
-    }
-
-    public boolean isValid(String token) {
-        Claims claims = extractClaims(token);
-        return true;
     }
 }

@@ -2,7 +2,7 @@ package org.ozbeman.ebento.services.event.impl;
 
 import org.ozbeman.ebento.dto.event.user.UserEventListDTO;
 import org.ozbeman.ebento.entity.enums.EventStatus;
-import org.ozbeman.ebento.repository.event.EventRepository;
+import org.ozbeman.ebento.repository.EventRepository;
 import org.ozbeman.ebento.services.event.UserEventService;
 import org.ozbeman.ebento.utils.PaginatedRequest;
 import org.springframework.data.domain.Page;
