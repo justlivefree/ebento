@@ -1,5 +1,6 @@
 package org.ozbeman.ebento.services.auth;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ozbeman.ebento.dto.auth.AuthResponseDTO;
 import org.ozbeman.ebento.entity.Role;
 import org.ozbeman.ebento.entity.Session;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class AuthService {
     private final UserRepository userRepository;
@@ -52,6 +54,7 @@ public class AuthService {
                                     .user(user)
                                     .status(SessionStatus.NOT_VERIFIED)
                                     .build());
+                            log.info("LOGIN_SESSION_CREATED - session::{}", session.getId());
                             String code = "1111";
                             otpStoreService.save(String.valueOf(user.getId()), code);
                             String token = jwtTokenService.generateToken(
@@ -61,10 +64,14 @@ public class AuthService {
                             return new AuthResponseDTO(token);
                         }
                 ).orElseThrow(
-                        () -> new ResourceNotFound("User Not found")
+                        () -> {
+                            log.info("LOGIN_USER_NOT_FOUND - phone_number::{}", phoneNumber);
+                            return new ResourceNotFound("User Not found");
+                        }
                 );
     }
 
+    @Transactional
     public AuthResponseDTO register(String name, String phoneNumber) {
         Optional<User> user = userRepository.findOneByPhoneNumber(phoneNumber);
         if (user.isEmpty()) {
@@ -82,22 +89,28 @@ public class AuthService {
             String token = jwtTokenService.generateToken(session.getGuid().toString(), Map.of("roles", List.of(UserRole.ROLE_USER)));
             String code = "1111";
             otpStoreService.save(String.valueOf(newUser.getId()), code);
+            log.info("REGISTER_USER_CREATED - user::{}", newUser.getId());
+            log.info("REGISTER_SESSION_CREATED - session::{}", session.getId());
             return new AuthResponseDTO(token);
         }
+        log.info("REGISTER_USER_ALREADY_EXISTS - user::{}", user.get().getId());
         throw new InvalidRequestException("User Already Exists");
     }
 
     @Transactional
     public void verify(Session session, String code) {
         if (session == null) {
+            log.info("VERIFICATION_NO_SESSION");
             throw new AccessDenied();
         }
         User user = session.getUser();
         String savedCode = otpStoreService.get(String.valueOf(user.getId()));
         if (savedCode == null) {
+            log.info("VERIFICATION_CODE_EXPIRED");
             throw new InvalidRequestException("Code is expired");
         }
         if (!savedCode.equals(code)) {
+            log.info("VERIFICATION_INVALID_CODE");
             throw new InvalidRequestException("Invalid code");
         }
         if (user.getStatus() == UserStatus.NOT_VERIFIED) {

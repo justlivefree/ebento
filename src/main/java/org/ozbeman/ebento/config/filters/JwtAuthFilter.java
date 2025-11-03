@@ -1,4 +1,4 @@
-package org.ozbeman.ebento.config;
+package org.ozbeman.ebento.config.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
@@ -7,6 +7,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.ozbeman.ebento.config.CustomUserDetails;
 import org.ozbeman.ebento.entity.Session;
 import org.ozbeman.ebento.entity.User;
 import org.ozbeman.ebento.entity.enums.SessionStatus;
@@ -29,21 +32,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtTokenService jwtTokenService;
     private final SessionRepository sessionRepository;
-    private static final ObjectMapper mapper = new ObjectMapper();
-
-    public JwtAuthFilter(JwtTokenService jwtTokenService, SessionRepository sessionRepository) {
-        this.jwtTokenService = jwtTokenService;
-        this.sessionRepository = sessionRepository;
-    }
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request,
+            @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
@@ -65,9 +65,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (JwtException e) {
-            String errorResponseJson = mapper.writeValueAsString(new ApiErrorResponse("Invalid Token"));
+            log.warn("INVALID_JWT_TOKEN: {}", e.getMessage());
+            String errorResponse = objectMapper.writeValueAsString(new ApiErrorResponse("Invalid Token"));
             response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-            response.getWriter().write(errorResponseJson);
+            response.getWriter().write(errorResponse);
         }
     }
 }

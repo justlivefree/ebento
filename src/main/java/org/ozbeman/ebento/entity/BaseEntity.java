@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -25,7 +26,7 @@ public abstract class BaseEntity {
     @UuidGenerator(style = UuidGenerator.Style.TIME)
     private UUID guid;
 
-    @CreationTimestamp
+    @CreationTimestamp(source = SourceType.VM)
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

@@ -1,6 +1,8 @@
 package org.ozbeman.ebento.services.channel.impl;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ozbeman.ebento.dto.channel.admin.AdminChannelCreateDTO;
 import org.ozbeman.ebento.dto.channel.admin.AdminChannelDTO;
 import org.ozbeman.ebento.dto.channel.admin.AdminChannelListDTO;
@@ -14,11 +16,7 @@ import org.ozbeman.ebento.entity.enums.FileType;
 import org.ozbeman.ebento.entity.enums.UserRole;
 import org.ozbeman.ebento.exceptions.InvalidRequestException;
 import org.ozbeman.ebento.exceptions.ResourceNotFound;
-import org.ozbeman.ebento.repository.ChannelCategoryRepository;
-import org.ozbeman.ebento.repository.ChannelRepository;
-import org.ozbeman.ebento.repository.RoleRepository;
-import org.ozbeman.ebento.repository.SessionRepository;
-import org.ozbeman.ebento.repository.UserRepository;
+import org.ozbeman.ebento.repository.*;
 import org.ozbeman.ebento.services.channel.AdminChannelManageService;
 import org.ozbeman.ebento.utils.FileUtils;
 import org.ozbeman.ebento.utils.PaginatedRequest;
@@ -32,7 +30,9 @@ import java.io.IOException;
 import java.util.UUID;
 
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class AdminChannelManageServiceImpl implements AdminChannelManageService {
     private final ChannelRepository channelRepository;
     private final UserRepository userRepository;
@@ -41,25 +41,10 @@ public class AdminChannelManageServiceImpl implements AdminChannelManageService 
     private final SessionRepository sessionRepository;
     private final FileUtils fileUtils;
 
-    public AdminChannelManageServiceImpl(
-            ChannelRepository channelRepository,
-            UserRepository userRepository,
-            RoleRepository roleRepository,
-            ChannelCategoryRepository channelCategoryRepository,
-            SessionRepository sessionRepository,
-            FileUtils fileUtils
-    ) {
-        this.channelRepository = channelRepository;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.channelCategoryRepository = channelCategoryRepository;
-        this.sessionRepository = sessionRepository;
-        this.fileUtils = fileUtils;
-    }
-
     public Page<AdminChannelListDTO> getChannels(@Valid PaginatedRequest paginatedRequest) {
         Pageable pageable = paginatedRequest.generatePageable();
         String search = paginatedRequest.getSearch();
+        log.info("ADMIN_CHANNEL_GET_CHANNELS");
         if (search != null) {
             return channelRepository.findByTitleContainingIgnoreCase(search, pageable)
                     .map(AdminChannelListDTO::of);
@@ -70,7 +55,10 @@ public class AdminChannelManageServiceImpl implements AdminChannelManageService 
 
     public AdminChannelDTO getChannel(UUID guid) {
         return channelRepository.findOneWithUserByGuid(guid)
-                .map(AdminChannelDTO::of)
+                .map(channel -> {
+                    log.info("ADMIN_CHANNEL_GET_CHANNEL: channel={}", channel.getId());
+                    return AdminChannelDTO.of(channel);
+                })
                 .orElseThrow(() -> new ResourceNotFound("Channel Not Found"));
     }
 
@@ -94,8 +82,10 @@ public class AdminChannelManageServiceImpl implements AdminChannelManageService 
                     .user(user)
                     .category(category)
                     .build());
+            log.info("ADMIN_CHANNEL_CREATED: channel={}, creator={}", newChannel.getId(), user.getId());
             return AdminChannelDTO.of(newChannel);
         } else {
+            log.info("ADMIN_USER_ALREADY_HAVE_CHANNEL");
             throw new InvalidRequestException("User already have channel");
         }
     }
@@ -118,6 +108,7 @@ public class AdminChannelManageServiceImpl implements AdminChannelManageService 
                                 ChannelCategory category = channelCategoryRepository.findOneByGuid(dto.getCategoryId())
                                         .orElseThrow(() -> new ResourceNotFound("Category Not Found"));
                                 channel.setCategory(category);
+                                log.info("ADMIN_CHANNEL_UPDATE_CATEGORY: category={}", category.getId());
                             }
                             if (dto.getUserId() != null) {
                                 channel.setUser(userRepository.findOneWithChannelByGuid(dto.getUserId())
@@ -131,6 +122,11 @@ public class AdminChannelManageServiceImpl implements AdminChannelManageService 
                                                                 .user(newUser).build());
                                                         sessionRepository.deleteByUser(newUser);
                                                         sessionRepository.deleteByUser(oldUser);
+                                                        log.info(
+                                                                "ADMIN_CHANNEL_UPDATE_USER: old_user={}, new_user={}",
+                                                                oldUser.getId(),
+                                                                newUser.getId()
+                                                        );
                                                         return newUser;
                                                     }
                                                     throw new InvalidRequestException("User already have channel");
@@ -139,6 +135,7 @@ public class AdminChannelManageServiceImpl implements AdminChannelManageService 
                                 );
                             }
                             channelRepository.save(channel);
+                            log.info("ADMIN_CHANNEL_UPDATE: channel={}", channel.getId());
                             return AdminChannelDTO.of(channel);
                         }
                 ).orElseThrow(() -> new ResourceNotFound("Channel Not Found"));
@@ -154,11 +151,11 @@ public class AdminChannelManageServiceImpl implements AdminChannelManageService 
             channel.setAvatarFileId(fileId);
             channel.setAvatarFileType(fileType);
             channelRepository.save(channel);
+            log.info("ADMIN_CHANNEL_UPLOAD_AVATAR: channel={}", channel.getId());
             return AdminChannelDTO.of(channel);
-        } catch (IOException e) {
+        } catch (IllegalArgumentException | IOException e) {
+            log.error("ADMIN_CHANNEL_UPLOAD_AVATAR_ERROR: {}", e.getMessage());
             throw new InvalidRequestException("File is incorrect");
-        } catch (IllegalArgumentException e) {
-            throw new InvalidRequestException("Invalid file format");
         }
     }
 
@@ -173,11 +170,11 @@ public class AdminChannelManageServiceImpl implements AdminChannelManageService 
             channel.setBackgroundFileId(fileId);
             channel.setBackgroundFileType(fileType);
             channelRepository.save(channel);
+            log.info("ADMIN_CHANNEL_UPLOAD_BACKGROUND: channel={}", channel.getId());
             return AdminChannelDTO.of(channel);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidRequestException("Invalid file format");
+        } catch (IllegalArgumentException | IOException e) {
+            log.error("ADMIN_CHANNEL_UPLOAD_BACKGROUND_ERROR: {}", e.getMessage());
+            throw new InvalidRequestException("File is incorrect");
         }
     }
 
@@ -189,6 +186,7 @@ public class AdminChannelManageServiceImpl implements AdminChannelManageService 
         user.setChannel(null);
         roleRepository.deleteByUserAndRole(user, UserRole.ROLE_CREATOR);
         sessionRepository.deleteByUser(user);
+        log.error("ADMIN_CHANNEL_DELETED");
         channelRepository.delete(channel);
     }
 }

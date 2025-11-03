@@ -20,21 +20,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiErrorResponse resourceNotFoundHandler(ResourceNotFound ex) {
-        log.error(ex.getMessage());
         return new ApiErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(InvalidRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse invalidRequestHandler(InvalidRequestException ex) {
-        log.error(ex.getMessage());
         return new ApiErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(AccessDenied.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ApiErrorResponse customAccessDeniedHandler(AccessDenied ex) {
-        log.error(ex.getMessage());
         return new ApiErrorResponse(ex.getMessage());
     }
 
