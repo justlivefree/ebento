@@ -59,6 +59,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiErrorResponse generalHandler(Exception ex) {
+        ex.printStackTrace();
         log.error(String.valueOf(ex.fillInStackTrace()));
         return new ApiErrorResponse("Server Error");
     }
